@@ -9,16 +9,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AsyncServlet extends HttpServlet {
-    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(200, 400,
+public class FibServlet extends HttpServlet {
+    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(16, 16,
             50000L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(500));
 
-    public AsyncServlet() {
+    public FibServlet() {
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         AsyncContext async = request.startAsync(request, response);
-        EXECUTOR.execute(new AsyncWorker(async));
+        EXECUTOR.execute(new FibAsync(async));
     }
 }
