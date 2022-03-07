@@ -1,7 +1,6 @@
 package com.rtbhouse;
 
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -10,17 +9,20 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 public class Worker {
-    public static void main(String[] args) throws Exception {
-        int serverPort = Integer.parseInt(args[0]);
+    private static final int JETTY_PORT = 8000;
+    private static final int JETTY_MIN_THREADS = 32;
+    private static final int JETTY_MAX_THREADS = 32;
+    private static final int JETTY_QUEUE_CAPACITY = 128;
 
+    public static void main(String[] args) throws Exception {
         Worker worker = new Worker();
-        worker.run(serverPort);
+        worker.run();
     }
 
-    public void run(int serverPort) throws Exception {
+    public void run() throws Exception {
         Server server = new Server(buildThreadPool());
-        server.setConnectors(buildConnectors(server, serverPort));
-        server.setHandler(buildHandler());
+        server.setConnectors(buildConnectors(server));
+        server.setHandler(buildServletContextHandler());
         server.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -33,19 +35,18 @@ public class Worker {
     }
 
     private ThreadPool buildThreadPool() {
-        return new QueuedThreadPool(32, 32, new BlockingArrayQueue<>(100));
+        return new QueuedThreadPool(JETTY_MAX_THREADS, JETTY_MIN_THREADS, new BlockingArrayQueue<>(JETTY_QUEUE_CAPACITY));
     }
 
-    private Connector[] buildConnectors(Server server, int serverPort) {
+    private Connector[] buildConnectors(Server server) {
         ServerConnector connector = new ServerConnector(server);
-        connector.setPort(serverPort);
+        connector.setPort(JETTY_PORT);
 
         return new Connector[] { connector };
     }
-
-    private Handler buildHandler() {
+    private ServletContextHandler buildServletContextHandler() {
         ServletContextHandler servletHandler = new ServletContextHandler();
-        servletHandler.addServlet(FibServlet.class, "/");
+        servletHandler.addServlet(WorkerServlet.class, "/");
         return servletHandler;
     }
 }

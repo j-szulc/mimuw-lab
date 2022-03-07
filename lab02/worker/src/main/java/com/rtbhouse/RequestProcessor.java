@@ -7,14 +7,14 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class FibAsync implements Runnable {
-    private final AsyncContext asyncContext;
+public class RequestProcessor {
+    private AsyncContext asyncContext;
 
-    public FibAsync(AsyncContext asyncContext) {
+    public RequestProcessor(AsyncContext asyncContext) {
         this.asyncContext = asyncContext;
     }
 
-    public void run() {
+    public void process() {
         HttpServletRequest request = (HttpServletRequest) asyncContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
 
@@ -32,7 +32,7 @@ public class FibAsync implements Runnable {
         asyncContext.complete();
     }
 
-    public int fib(int n) {
+    private int fib(int n) {
         if (n == 0) return 1;
         if (n == 1) return 1;
         return fib(n - 1) + fib(n - 2);
