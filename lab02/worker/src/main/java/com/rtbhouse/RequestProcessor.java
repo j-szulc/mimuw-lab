@@ -2,10 +2,12 @@ package com.rtbhouse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.sql.Time;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +15,27 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RequestProcessor {
     private static final ThreadPoolExecutor REQUEST_PROCESSING_EXECUTOR = new ThreadPoolExecutor(2, 2, 60000L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(16384));
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static final KQueueAvg samplesQ = new KQueueAvg(10);
+
+    static {
+        scheduler.scheduleAtFixedRate(()->samplesQ.addSample(REQUEST_PROCESSING_EXECUTOR.getActiveCount()), 1, 1, TimeUnit.SECONDS);
+    }
 
     private AsyncContext asyncContext;
+
+
 
     public RequestProcessor() {
     }
 
     public void process(HttpServletRequest request, HttpServletResponse response) {
         AsyncContext asyncContext = request.startAsync(request, response);
+
+        if(samplesQ.getAvg().orElse(0f) > REQUEST_PROCESSING_EXECUTOR.getPoolSize()*0.9){
+            System.out.println("Dropped!");
+            return;
+        }
 
         REQUEST_PROCESSING_EXECUTOR.submit(() -> this.processAsync(asyncContext));
     }
