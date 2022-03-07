@@ -33,7 +33,6 @@ public class RequestProcessor {
         AsyncContext asyncContext = request.startAsync(request, response);
 
         if(samplesQ.getAvg().orElse(0f) > REQUEST_PROCESSING_EXECUTOR.getPoolSize()*0.9){
-            System.out.println("Dropped!");
             asyncContext.complete();
         }
 
