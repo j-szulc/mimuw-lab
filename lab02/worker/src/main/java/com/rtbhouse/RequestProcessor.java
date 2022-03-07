@@ -2,20 +2,30 @@ package com.rtbhouse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class RequestProcessor {
+    private static final ThreadPoolExecutor REQUEST_PROCESSING_EXECUTOR = new ThreadPoolExecutor(2, 2, 60000L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(16384));
+
     private AsyncContext asyncContext;
 
-    public RequestProcessor(AsyncContext asyncContext) {
-        this.asyncContext = asyncContext;
+    public RequestProcessor() {
     }
 
-    public void process() {
+    public void process(HttpServletRequest request, HttpServletResponse response) {
+        AsyncContext asyncContext = request.startAsync(request, response);
+
+        REQUEST_PROCESSING_EXECUTOR.submit(() -> this.processAsync(asyncContext));
+    }
+
+    private void processAsync(AsyncContext asyncContext) {
         HttpServletRequest request = (HttpServletRequest) asyncContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
 
