@@ -19,7 +19,7 @@ public class RequestProcessor {
         HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
 
         int n = Integer.parseInt(request.getParameter("n"));
-        int fib = fib(n);
+        long fib = fib(n);
 
         try {
             PrintWriter responseWriter = response.getWriter();
@@ -32,9 +32,16 @@ public class RequestProcessor {
         asyncContext.complete();
     }
 
-    private int fib(int n) {
-        if (n == 0) return 1;
-        if (n == 1) return 1;
-        return fib(n - 1) + fib(n - 2);
+    private long fib(int n) {
+        long fibCur = 1;
+        long fibPrev = 1;
+
+        for (int i = 0; i < n; i++) {
+            long fibNext = fibCur + fibPrev;
+            fibPrev = fibCur;
+            fibCur = fibNext;
+        }
+
+        return fibCur;
     }
 }
