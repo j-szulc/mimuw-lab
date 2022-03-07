@@ -12,7 +12,7 @@ public class Worker {
     private static final int JETTY_PORT = 8000;
     private static final int JETTY_MIN_THREADS = 32;
     private static final int JETTY_MAX_THREADS = 32;
-    private static final int JETTY_QUEUE_CAPACITY = 128;
+    private static final int JETTY_QUEUE_CAPACITY = 16384;
 
     public static void main(String[] args) throws Exception {
         Worker worker = new Worker();
