@@ -2,6 +2,7 @@ package com.rtbhouse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +20,11 @@ public class RequestProcessor {
         HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
 
         int n = Integer.parseInt(request.getParameter("n"));
-        long fib = fib(n);
+        double result = doWork(n);
 
         try {
             PrintWriter responseWriter = response.getWriter();
-            responseWriter.println(fib);
+            responseWriter.println(result);
             responseWriter.flush();
         } catch (IOException e) {
             System.out.println(e);
@@ -32,16 +33,14 @@ public class RequestProcessor {
         asyncContext.complete();
     }
 
-    private long fib(int n) {
-        long fibCur = 1;
-        long fibPrev = 1;
+    private double doWork(int n) {
+        double result = Math.sqrt(ThreadLocalRandom.current().nextDouble());
 
         for (int i = 0; i < n; i++) {
-            long fibNext = fibCur + fibPrev;
-            fibPrev = fibCur;
-            fibCur = fibNext;
+            double rand = ThreadLocalRandom.current().nextDouble();
+            result = (result + Math.sqrt(rand)) / 2;
         }
 
-        return fibCur;
+        return result;
     }
 }
