@@ -113,7 +113,7 @@ frontend http
 
 backend app_server
         balance roundrobin
-        server app_ABC stXYZvmANC.rtb-lab.pl stXYZvmANC.rtb-lab.pl:8000
+        server stXYZvmANC_rtb_lab_pl stXYZvmANC.rtb-lab.pl:8000
         # ...
 
 
