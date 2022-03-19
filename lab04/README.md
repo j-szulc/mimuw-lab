@@ -37,7 +37,7 @@ You may use any programming language to solve the task. However, python is great
 <details>
     <summary>Hint 2 /spoiler</summary>
 
-    You need an image that will be used for running compiled programs.
+    The same image may contain test cases and score the programs.
 
 </details>
 
