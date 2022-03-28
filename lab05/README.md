@@ -10,16 +10,6 @@ Create dashboard in grafana that will present:
 
 ## Run grafana with graphite in docker
 
-### Run grafana
-
-```bash
-docker pull grafana/grafana-oss
-
-docker run --rm -d -p 3000:3000 --name grafana grafana/grafana-oss
-```
-
-(add sudo if user is not in docker group)
-
 ### Run graphite
 
 ```bash
@@ -28,12 +18,30 @@ docker pull  graphiteapp/graphite-statsd
 docker run -d \
  --name graphite \
  --restart=always \
- --link graphite:graphite \
- -p 80:80 \
+ -p 80:80\
+ -p 2003-2004:2003-2004\
+ -p 2023-2024:2023-2024\
+ -p 8125:8125/udp\
+ -p 8126:8126\
  graphiteapp/graphite-statsd
  
- uvicorn --port 8125 main:app
 ```
+
+### Run grafana
+
+```bash
+docker pull grafana/grafana-oss
+
+docker run --rm -d -p 3000:3000 --link graphite:graphite --name grafana grafana/grafana-oss
+```
+
+(add sudo if user is not in docker group)
+
+### Run app
+
+`
+ uvicorn main:app
+`
 
 Log into grafana:
 http://127.0.0.1:3000/
