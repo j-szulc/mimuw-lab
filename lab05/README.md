@@ -30,6 +30,8 @@ docker run -d \
  --restart=always \
  -p 80:80 \
  graphiteapp/graphite-statsd
+ 
+ uvicorn --port 8125 main:app
 ```
 
 Log into grafana:
