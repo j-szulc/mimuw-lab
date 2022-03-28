@@ -25,7 +25,7 @@ docker run --rm -d -p 3000:3000 --name grafana grafana/grafana-oss
 ```bash
 docker pull  graphiteapp/graphite-statsd
 
-docker run --rm -d \
+docker run -d \
  --name graphite \
  --restart=always \
  -p 80:80 \
