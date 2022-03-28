@@ -15,7 +15,7 @@ Create dashboard in grafana that will present:
 ```bash
 docker pull grafana/grafana-oss
 
-docker run -d -p 3000:3000 --name grafana grafana/grafana-oss
+docker run --rm -d -p 3000:3000 --name grafana grafana/grafana-oss
 ```
 
 (add sudo if user is not in docker group)
@@ -25,7 +25,7 @@ docker run -d -p 3000:3000 --name grafana grafana/grafana-oss
 ```bash
 docker pull  graphiteapp/graphite-statsd
 
-docker run -d \
+docker run --rm -d \
  --name graphite \
  --restart=always \
  -p 80:80 \
