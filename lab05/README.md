@@ -28,6 +28,7 @@ docker pull  graphiteapp/graphite-statsd
 docker run -d \
  --name graphite \
  --restart=always \
+ --link graphite:graphite \
  -p 80:80 \
  graphiteapp/graphite-statsd
  
