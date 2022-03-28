@@ -28,7 +28,7 @@ docker pull  graphiteapp/graphite-statsd
 docker run -d \
  --name graphite \
  --restart=always \
- --network=host \
+ -p 3000:3000 \
  graphiteapp/graphite-statsd
 ```
 
