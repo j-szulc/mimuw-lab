@@ -19,7 +19,7 @@ public class RequestProcessor {
     private static final KQueueAvg samplesQ = new KQueueAvg(10);
 
     static {
-        scheduler.scheduleAtFixedRate(()->samplesQ.addSample(REQUEST_PROCESSING_EXECUTOR.getActiveCount()), 1, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(()->samplesQ.addSample(REQUEST_PROCESSING_EXECUTOR.getActiveCount()), 100, 100, TimeUnit.MILLISECONDS);
     }
 
     private AsyncContext asyncContext;
