@@ -60,7 +60,7 @@ verify on graphite web:
 http://localhost/render?from=-10mins&until=now&target=stats.test
 
 verify on grafana:
-http://localhost:3000/render?from=-10mins&until=now&target=stats.test
+http://localhost:3000/explore?orgId=1&left=%7B%22datasource%22:%22Graphite%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22target%22:%22stats.test%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D
 
 ## Task 2
 
@@ -68,4 +68,8 @@ http://localhost:3000/render?from=-10mins&until=now&target=stats.test
 - Create LB (similar to lab03) which checks created endpoint
 - Verify if /health returns unhealthy state - LB will not forward traffic
 - Add HEALTHCHECK in Dockerfile
+
+Check:
+- if in one node /health return != 200 than no traffic goes to this node from LB
+- verify if service is unhealty docker status is unhealthy as well (checked by docker ps)
 
